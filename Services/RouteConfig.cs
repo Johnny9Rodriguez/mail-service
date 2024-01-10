@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace MailService;
 
 public static class RouteConfig
