@@ -56,7 +56,7 @@ Please ensure you have the correct version installed before running the project.
 4. Restore the .NET packages:
 
    ```sh
-   dotnet restore
+   dotnet restore MailService.csproj
    ```
 
 5. Run the application:
