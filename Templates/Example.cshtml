@@ -3,8 +3,12 @@
 <html>
 
 <body>
-    <h1>Example:</h1>
-    <p>@Model.Value</p>
+    <h1>Example</h1>
+    <p>@Model.Message</p>
+    @*
+    Use RazorExtension.Raw() to inject HTML into your template.
+    <p>@RazorExtensions.Raw(Model.Message)</p>
+    *@
 </body>
 
 </html>

@@ -8,6 +8,20 @@ public class MailSender(ClientOptions clientOptions)
     private readonly MailRenderer mailRenderer = new();
     private readonly MailBuilder mailBuilder = new(clientOptions);
 
+    /// <summary>
+    /// Sends an email using the provided model and template.
+    /// </summary>
+    /// <typeparam name="TModel">The type of the model. Must implement IMailModel.</typeparam>
+    /// <param name="model">The model to use for the email.</param>
+    /// <param name="template">The template to use for the email.</param>
+    /// <returns>
+    /// A Result object that represents the outcome of the email sending operation.
+    /// Possible status codes are:
+    /// - 200 (Ok): The email was sent successfully.
+    /// - 401 (Unauthorized): Authentication with the SMTP server failed.
+    /// - 502 (Bad Gateway): Connection to the SMTP server failed.
+    /// - 500 (Internal Server Error): An unexpected exception occurred.
+    /// </returns>
     public async Task<IResult> Send<TModel>(TModel model, string template) where TModel : IMailModel
     {
         string htmlRender = await mailRenderer.Render(model.Key, model, template);

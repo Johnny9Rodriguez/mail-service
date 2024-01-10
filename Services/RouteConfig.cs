@@ -22,5 +22,7 @@ public static class RouteConfig
             string template = await File.ReadAllTextAsync(filePath);
             return await mailSender.Send(model, template);
         });
+
+        // Add custom routes here.
     }
 }

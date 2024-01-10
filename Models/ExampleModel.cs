@@ -8,5 +8,5 @@ public class ExampleModel : IMailModel
     public required string Subject { get; set; }
 
     // Custom properties.
-    public required string Value { get; set; }
+    public required string Message { get; set; }
 }
