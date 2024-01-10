@@ -1,7 +1,5 @@
 using MailKit.Net.Smtp;
-using Microsoft.VisualBasic;
 using MimeKit;
-using Sprache;
 
 namespace MailService;
 

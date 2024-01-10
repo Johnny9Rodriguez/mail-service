@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Diagnostics;
-
 namespace MailService;
 
 public static class RouteConfig
