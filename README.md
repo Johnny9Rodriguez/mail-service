@@ -67,7 +67,18 @@ Please ensure you have the correct version installed before running the project.
 
 The application will start and listen for HTTP requests. You can test the API communication by sending a GET request to the root `/` endpoint.
 
+#### Send an email
+
 To send an email using the `/example` endpoint, make a POST request with an `ExampleModel` object. The `ExampleModel` object should match the structure defined in [`ExampleModel.cs`](/Models/ExampleModel.cs).
+
+```json
+{
+    "RecipientName": "John Doe",
+    "RecipientAddress": "john@doe.com",
+    "Subject": "Example",
+    "Message": "This is an example."
+}
+```
 
 The email template used for the ''/example' endpoint is located in [`Example.cshtml`](/Templates/Example.cshtml). You can modify this template as needed.
 
