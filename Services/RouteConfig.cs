@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Diagnostics;
+
 namespace MailService;
 
 public static class RouteConfig
@@ -20,7 +22,7 @@ public static class RouteConfig
         {
             string filePath = Path.Combine(templatePath, "Example.cshtml");
             string template = await File.ReadAllTextAsync(filePath);
-            mailSender.Send(model, template);
+            return await mailSender.Send(model, template);
         });
     }
 }
