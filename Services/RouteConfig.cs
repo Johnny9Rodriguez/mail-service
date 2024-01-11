@@ -8,7 +8,6 @@ public static class RouteConfig
     {
         DotNetEnv.Env.Load();
         templatePath = Environment.GetEnvironmentVariable("TEMPLATE_PATH") ?? "./Templates";
-        Console.WriteLine(templatePath);
     }
 
     public static void ConfigureRoutes(WebApplication app, MailSender mailSender)
