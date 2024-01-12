@@ -39,7 +39,7 @@ public class MailSender
         try
         {
             var smtpClient = new SmtpClient();
-            smtpClient.Connect(clientOptions.SmtpServer, 587, false);
+            smtpClient.Connect(clientOptions.SmtpServer, int.Parse(clientOptions.SmtpPort ?? "587"), false);
             smtpClient.Authenticate(clientOptions.Username, clientOptions.Password);
             smtpClient.Send(message);
             smtpClient.Disconnect(true);

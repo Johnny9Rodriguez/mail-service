@@ -31,28 +31,23 @@ Please ensure you have the correct version installed before running the project.
    cd mail-service
    ```
 
-3. Set up your environment variables. Create a `.env` file in the root directory of the project and add your environment variables:
+3. Set up your environment variables. Create a `appsettings.json` file in the root directory of the project and add your environment variables:
 
-   ```sh
-   touch .env
+   ```json
+   {
+       "Port": "8010",
+       "TemplatePath": "./Templates",
+       "Client": {
+           "SenderName": "yourName",
+           "SenderAddress": "yourEmailAddress",
+           "SmtpServer": "yourSmtpServer",
+           "SmtpPort": "yourSmtpPort",
+           "Username": "yourSmtpUsername",
+           "Password": "yourSmtpPassword"
+       }
+   }
    ```
-
-   Open the `.env` file and add your variables:
-
-   ```plaintext
-   API_PORT=8010 #default
-   TEMPLATE_PATH="./Templates" #default 
    
-   Client_SENDER_NAME=your_name
-   Client_SENDER_ADDRESS=your_email_address
-   
-   Client_SMTP_SERVER=your_smtp_server
-   Client_SMTP_PORT=your_smtp_port
-   
-   Client_USERNAME=your_smtp_username
-   Client_PASSWORD=your_smtp_password
-   ```
-
 4. Restore the .NET packages:
 
    ```sh
@@ -67,7 +62,7 @@ Please ensure you have the correct version installed before running the project.
 
 The application will start and listen for HTTP requests. You can test the API communication by sending a GET request to the root `/` endpoint.
 
-#### Send an email
+#### Send an Email
 
 To send an email using the `/example` endpoint, make a POST request with an `ExampleModel` object. The `ExampleModel` object should match the structure defined in [`ExampleModel.cs`](/Models/ExampleModel.cs).
 
@@ -84,7 +79,7 @@ The email template used for the ''/example' endpoint is located in [`Example.csh
 
 ## Adding a New Route, Model, and Template
 
-### 1. Create a new model
+### 1. Create a new Model
 
 Create a new C# class file in the `Models` directory. For example, `NewModel.cs`. This file will define the data structure for your new endpoint. The new model class should implement the `IMailModel` interface. 
 
@@ -105,7 +100,7 @@ public class NewModel : IMailModel
 }
 ```
 
-### 2. Create a new template
+### 2. Create a new Template
 
 Create a new `.cshtml` file in the `Templates` (or in the specified path in the `.env`) directory. For example, `NewTemplate.cshtml`.
 
@@ -141,7 +136,7 @@ If you need to inject HTML content into your template, you can use the `@RazorEx
 </html>
 ```
 
-### 3. Create a new route
+### 3. Create a new Route
 
 In `RouteConfig.cs`, add a new route for your endpoint.
 
@@ -158,7 +153,7 @@ This code creates a new POST route at `/new` that accepts a `NewModel` as the re
 
 ## Deployment
 
-### 1. Publish the project
+### Publish the Project
 
 Use the `dotnet publish` command to compile the application, its dependencies, and its .NET runtime into a folder for deployment to a hosting system. Run the following command in your terminal:
 
@@ -168,28 +163,25 @@ dotnet publish MailService.csproj -o ./publish
 
 This command will create a `publish` directory at the root of your project which contains the compiled application and its dependencies.
 
-### 2. Update the .env file
+#### Update the Template Path
 
-By default, the `.env` file is copied to the output directory during the build process. This is specified in the [`MailService.csproj`](MailService.csproj) file:
+By default, the templates located in the `Templates` directory are copied to the publish directory when you run the `dotnet publish` command. This behavior is defined in the [`MailService.csproj`](MailService.csproj) file:
 
 ```xml
-<Content Include=".env">
-  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-</Content>
+<ItemGroup>
+  <None Include="Templates\**" CopyToPublishDirectory="PreserveNewest" />
+</ItemGroup>
 ```
 
-If you don't want to copy the `.env` file to the output directory by default, you can remove this entry from the `.csproj` file. However, you will need to manually copy the `.env` file to the `publish` directory after running the `dotnet publish` command.
+You can change this behavior by removing or commenting out the line above.
 
-### 3. Update the template file directory
-
- In the production environment, you may need to update the `TEMPLATE_PATH` variable in the `.env` file to point to the correct directory where your template files are located.
-
-### 4. Run the application
+### Run the Application
 
 After publishing and setting up the environment variables, you can run the application using the `dotnet` command:
 
 ```sh
-dotnet ./publish/MailService.dll
+cd publish
+dotnet MailService.dll
 ```
 
 This command will start the application using the settings and dependencies in the `publish` directory.
