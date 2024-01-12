@@ -5,13 +5,15 @@ string apiPort = builder.Configuration["Port"] ?? "5000";
 builder.WebHost.UseUrls($"http://localhost:{apiPort}");
 builder.Services.Configure<ClientOptions>(builder.Configuration.GetSection("Client"));
 builder.Services.AddTransient<MailSender>();
+builder.Services.AddTransient<IApiKeyValidation, ApiKeyValidation>();
+builder.Services.AddTransient<RouteConfig>();
 builder.Services.AddHttpLogging(o => { });
 
 var app = builder.Build();
 app.UseHttpLogging();
 
 MailSender mailSender = app.Services.GetRequiredService<MailSender>();
-string templatePath = app.Configuration["TemplatePath"] ?? "./Templates";
-RouteConfig.ConfigureRoutes(app, mailSender, templatePath);
+RouteConfig routeConfig = app.Services.GetRequiredService<RouteConfig>();
+routeConfig.ConfigureRoutes(app, mailSender);
 
 app.Run();

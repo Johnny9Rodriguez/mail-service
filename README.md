@@ -152,6 +152,37 @@ app.MapPost("/new", async (NewModel model) =>
 
 This code creates a new POST route at `/new` that accepts a `NewModel` as the request body. It reads the `NewTemplate.cshtml` file from the `Templates` directory and sends an email using the `NewModel` and the template.
 
+## API Key Usage
+
+This application allows the use of an API key in the request header `x-api-key`for authentication. To protect a route with an API key, add the API key to your `appsettings.json`:
+
+```json
+{
+	"ApiKey": "yourApiKey"
+}
+```
+
+To protect a route with the API key, you need to use the [`IApiKeyValidation`](/Security/IApiKeyValidation.cs) service in your route configuration. Here's an example of how to do this in a `MapPost` method:
+
+```csharp
+app.MapPost("/new", async (HttpContext httpContext, NewModel model) =>
+{
+    var validationResponse = apiKeyValidation.ValidateApiKey(httpContext);
+    if (validationResponse != null)
+    {
+        return validationResponse;
+    }
+
+    // Your existing code here...
+});
+```
+
+In this code, `apiKeyValidation.ValidateApiKey(httpContext)` checks if the request contains a valid API key. If it doesn't, it returns an error response, and the rest of the code is not executed.
+
+### Sending a Request with an API Key
+
+To send a request to a protected route, you need to add the API key to the request header. The key should be in the format `x-api-key: yourApiKey`. 
+
 ## Deployment
 
 ### Publish the Project
