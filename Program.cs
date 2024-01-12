@@ -1,13 +1,10 @@
 using MailService;
 
-DotNetEnv.Env.Load();
-string apiPort = Environment.GetEnvironmentVariable("API_PORT") ?? "5000";
-
 var builder = WebApplication.CreateBuilder(args);
+string apiPort = builder.Configuration["Port"] ?? "5000";
 builder.WebHost.UseUrls($"http://localhost:{apiPort}");
-builder.Configuration.AddEnvironmentVariables(prefix: "Client_");
-
-// Add localhost and 127.0.0.1 to allowed CORS origins.
+builder.Services.Configure<ClientOptions>(builder.Configuration.GetSection("Client"));
+builder.Services.AddTransient<MailSender>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost",
@@ -22,14 +19,14 @@ builder.Services.AddCors(options =>
                    });
         });
 });
+builder.Services.AddHttpLogging(o => { });
 
 var app = builder.Build();
-
+app.UseHttpLogging();
 app.UseCors("AllowLocalhost");
 
-ClientOptions clientOptions = new(app.Configuration);
-MailSender mailSender = new(clientOptions);
-
-RouteConfig.ConfigureRoutes(app, mailSender);
+MailSender mailSender = app.Services.GetRequiredService<MailSender>();
+string templatePath = app.Configuration["TemplatePath"] ?? "./Templates";
+RouteConfig.ConfigureRoutes(app, mailSender, templatePath);
 
 app.Run();

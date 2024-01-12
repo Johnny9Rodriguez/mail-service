@@ -2,15 +2,7 @@ namespace MailService;
 
 public static class RouteConfig
 {
-    static string templatePath;
-
-    static RouteConfig()
-    {
-        DotNetEnv.Env.Load();
-        templatePath = Environment.GetEnvironmentVariable("TEMPLATE_PATH") ?? "./Templates";
-    }
-
-    public static void ConfigureRoutes(WebApplication app, MailSender mailSender)
+    public static void ConfigureRoutes(WebApplication app, MailSender mailSender, string templatePath)
     {
         // Default route for testing API communication.
         app.MapGet("/", () => "Ok");

@@ -1,12 +1,21 @@
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace MailService;
 
-public class MailSender(ClientOptions clientOptions)
+public class MailSender
 {
-    private readonly MailRenderer mailRenderer = new();
-    private readonly MailBuilder mailBuilder = new(clientOptions);
+    private readonly MailRenderer mailRenderer;
+    private readonly MailBuilder mailBuilder;
+    private readonly ClientOptions clientOptions;
+
+    public MailSender(IOptions<ClientOptions> clientOptions)
+    {
+        this.clientOptions = clientOptions.Value;
+        mailRenderer = new MailRenderer();
+        mailBuilder = new MailBuilder(this.clientOptions);
+    }
 
     /// <summary>
     /// Sends an email using the provided model and template.
@@ -30,7 +39,7 @@ public class MailSender(ClientOptions clientOptions)
         try
         {
             var smtpClient = new SmtpClient();
-            smtpClient.Connect(clientOptions.SmtpServer, clientOptions.SmtpPort, false);
+            smtpClient.Connect(clientOptions.SmtpServer, 587, false);
             smtpClient.Authenticate(clientOptions.Username, clientOptions.Password);
             smtpClient.Send(message);
             smtpClient.Disconnect(true);
