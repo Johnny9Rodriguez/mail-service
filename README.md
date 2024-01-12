@@ -13,7 +13,7 @@ I built this app to simplify sending HTML emails for job applications and to use
 
 This project requires the following to be installed on your system:
 
-- [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0): The project is built using .NET 8.0. You can download it from the official .NET website.
+-   [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet/8.0): The project is built using .NET 8.0. You can download it from the official .NET website.
 
 Please ensure you have the correct version installed before running the project.
 
@@ -21,44 +21,51 @@ Please ensure you have the correct version installed before running the project.
 
 1. Clone the repository:
 
-   ```sh
-   git clone git@github.com:Johnny9Rodriguez/mail-service.git
-   ```
+    ```sh
+    git clone git@github.com:Johnny9Rodriguez/mail-service.git
+    ```
 
 2. Navigate to the project directory:
 
-   ```sh
-   cd mail-service
-   ```
+    ```sh
+    cd mail-service
+    ```
 
 3. Set up your environment variables. Create a `appsettings.json` file in the root directory of the project and add your environment variables:
 
-   ```json
-   {
-       "Port": "8010",
-       "TemplatePath": "./Templates",
-       "Client": {
-           "SenderName": "yourName",
-           "SenderAddress": "yourEmailAddress",
-           "SmtpServer": "yourSmtpServer",
-           "SmtpPort": "yourSmtpPort",
-           "Username": "yourSmtpUsername",
-           "Password": "yourSmtpPassword"
-       }
-   }
-   ```
-   
+    ```json
+    {
+        "Logging": {
+            "LogLevel": {
+                "Default": "Information",
+                "Microsoft.AspNetCore": "Warning"
+            }
+        },
+        "AllowedHosts": "*",
+        "Port": "8010",
+        "TemplatePath": "./Templates",
+        "Client": {
+            "SenderName": "yourName",
+            "SenderAddress": "yourEmailAddress",
+            "SmtpServer": "yourSmtpServer",
+            "SmtpPort": "yourSmtpPort",
+            "Username": "yourSmtpUsername",
+            "Password": "yourSmtpPassword"
+        }
+    }
+    ```
+
 4. Restore the .NET packages:
 
-   ```sh
-   dotnet restore MailService.csproj
-   ```
+    ```sh
+    dotnet restore MailService.csproj
+    ```
 
 5. Run the application:
 
-   ```sh
-   dotnet run
-   ```
+    ```sh
+    dotnet run
+    ```
 
 The application will start and listen for HTTP requests. You can test the API communication by sending a GET request to the root `/` endpoint.
 
@@ -81,7 +88,7 @@ The email template used for the ''/example' endpoint is located in [`Example.csh
 
 ### 1. Create a new Model
 
-Create a new C# class file in the `Models` directory. For example, `NewModel.cs`. This file will define the data structure for your new endpoint. The new model class should implement the `IMailModel` interface. 
+Create a new C# class file in the `Models` directory. For example, `NewModel.cs`. This file will define the data structure for your new endpoint. The new model class should implement the `IMailModel` interface.
 
 The `Key` property is required for the caching of compiled templates. The `RecipientName`, `RecipientAddress`, and `Subject` properties are used by the `MailBuilder` to set the corresponding fields. These are not primarily meant for adding to the HTML template.
 
@@ -89,11 +96,11 @@ The `Key` property is required for the caching of compiled templates. The `Recip
 public class NewModel : IMailModel
 {
     public string Key { get; } = "newModel";
-    
+
     public string RecipientName { get; set; }
     public string RecipientAddress { get; set; }
     public string Subject { get; set; }
-    
+
     // CUSTOM PROPERTIES
     public string Message { get; set; }
     // Add more properties as needed.
@@ -107,15 +114,12 @@ Create a new `.cshtml` file in the `Templates` (or in the specified path in the 
 In the template, you can access the properties of your model using `@Model.PropertyName`. For example, `@Model.Message` will insert the value of the `Message` property from your model into the HTML.
 
 ```html
-@using MailService
-@model NewModel
+@using MailService @model NewModel
 <html>
-    
-<body>
-    <h1>New Model</h1>
-    <p>@Model.Message</p>
-</body>
-
+    <body>
+        <h1>New Model</h1>
+        <p>@Model.Message</p>
+    </body>
 </html>
 ```
 
@@ -124,15 +128,12 @@ In the template, you can access the properties of your model using `@Model.Prope
 If you need to inject HTML content into your template, you can use the `@RazorExtensions.Raw()` method from [`RazorExtensions.cs`](/Services/RazorExtensions.cs). This method takes a string of HTML and inserts it into the template as raw HTML, without encoding special characters. This is particularly useful when you want to add styling or links to your email body.
 
 ```html
-@using MailService
-@model NewModel
+@using MailService @model NewModel
 <html>
-    
-<body>
-    <h1>New Model</h1>
-    <p>@RazorExtensions.Raw(Model.Message)</p>
-</body>
-    
+    <body>
+        <h1>New Model</h1>
+        <p>@RazorExtensions.Raw(Model.Message)</p>
+    </body>
 </html>
 ```
 
